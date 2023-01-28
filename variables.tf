@@ -7,7 +7,7 @@ variable "domain_to_delegate_from" {
 
 
 variable "this_is_development" {
-  description = "The develoopment cluster environment and data/resources can be destroyed!"
+  description = "The development cluster environment and data/resources can be destroyed!"
   type        = string
   nullable    = false
   default     = false
