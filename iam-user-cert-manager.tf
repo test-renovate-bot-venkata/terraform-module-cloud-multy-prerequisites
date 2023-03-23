@@ -16,8 +16,3 @@ resource "aws_iam_access_key" "certmanager" {
   provider = aws.clientaccount
   user     = each.value.name
 }
-
-output "certmanager_iam_credentials" {
-  value = { for user, keys in aws_iam_access_key.certmanager : user => keys }
-  description = "A map of IAM Access Keys to Route53 for Cert Manager. One per Cluster Environment"
-}
