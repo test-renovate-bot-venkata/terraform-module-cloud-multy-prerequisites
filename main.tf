@@ -5,7 +5,7 @@ data "aws_route53_zone" "management_tenant_dns" {
 
 resource "aws_route53_zone" "main" {
   provider = aws.clientaccount
-  name     = "${local.company_key}.${data.aws_route53_zone.management_tenant_dns.name}"
+  name     = "${var.tenant_key}.${data.aws_route53_zone.management_tenant_dns.name}"
 }
 
 resource "aws_route53_record" "delegation_to_parent_tenant_zone" {
@@ -21,7 +21,7 @@ resource "aws_route53_record" "delegation_to_parent_tenant_zone" {
 
 module "dnssec_key" {
   source         = "git::https://github.com/GlueOps/terraform-module-cloud-aws-dnssec-kms-key.git?ref=v0.1.0"
-  aws_account_id = var.company_account_id
+  aws_account_id = var.tenant_account_id
 }
 
 resource "aws_route53_key_signing_key" "parent_tenant_zone" {
@@ -52,8 +52,8 @@ resource "aws_route53_record" "enable_dnssec_for_parent_tenant_zone" {
 
 resource "aws_route53_zone" "clusters" {
   provider = aws.clientaccount
-  for_each = toset(var.cluster_environments)
-  name     = "${each.value}.${local.company_key}.${data.aws_route53_zone.management_tenant_dns.name}"
+  for_each = local.cluster_environments
+  name     = "${each.value}.${var.tenant_key}.${data.aws_route53_zone.management_tenant_dns.name}"
   depends_on = [
     aws_route53_zone.main
   ]

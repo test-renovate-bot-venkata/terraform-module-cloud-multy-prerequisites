@@ -1,6 +1,6 @@
 
 variable "management_tenant_dns_zoneid" {
-  description = "The Route53 ZoneID that all the delegation is coming from"
+  description = "The Route53 ZoneID that all the delegation is coming from."
   type        = string
   nullable    = false
 }
@@ -13,14 +13,20 @@ variable "this_is_development" {
   default     = false
 }
 
-variable "company_key" {
-  description = "The company key"
+variable "tenant_key" {
+  description = "The tenant key"
   type        = string
   nullable    = false
 }
 
-variable "company_account_id" {
-  description = "The company AWS account id"
+variable "tenant_account_id" {
+  description = "The tenant AWS account id"
+  type        = string
+  nullable    = false
+}
+
+variable "github_owner" {
+  description = "The GitHub Owner"
   type        = string
   nullable    = false
 }
@@ -32,9 +38,60 @@ variable "management_tenant_dns_aws_account_id" {
 }
 
 variable "cluster_environments" {
-  description = "The cluster environments"
-  type        = list(string)
-  nullable    = false
+  description = "The cluster environments and their respective github app ids"
+  type = list(object({
+    environment_name         = string
+    github_app_client_id     = string
+    github_app_client_secret = string
+    github_api_token         = string
+    admin_github_org_name    = string
+    tenant_github_org_name   = string
+    vault_github_org_team_policy_mappings = list(object({
+      oidc_groups = list(string)
+      policy_name = string
+    }))
+    argocd_rbac_policies = string
+
+  }))
+  default = [
+    {
+      environment_name         = "test"
+      github_app_client_id     = "apidgoeshere"
+      github_app_client_secret = "secretgoeshere"
+      github_api_token         = "apitokengoeshere"
+      admin_github_org_name    = "GlueOps"
+      tenant_github_org_name   = "glueops-rocks"
+      vault_github_org_team_policy_mappings = [
+        {
+          oidc_groups = ["GlueOps:vault_super_admins"]
+          policy_name = "editor"
+        },
+        {
+          oidc_groups = ["GlueOps:vault_super_admins", "testing-okta:developers"]
+          policy_name = "reader"
+        }
+      ]
+      argocd_rbac_policies = <<EOT
+      g, GlueOps:argocd_super_admins, role:admin
+      g, glueops-rocks:developers, role:developers
+      p, role:developers, clusters, get, *, allow
+      p, role:developers, *, get, development, allow
+      p, role:developers, repositories, *, development/*, allow
+      p, role:developers, applications, *, development/*, allow
+      p, role:developers, exec, *, development/*, allow
+EOT
+    }
+
+  ]
+
+}
+
+locals {
+  environment_map = { for env in var.cluster_environments : env.environment_name => env }
+}
+
+locals {
+  cluster_environments = toset(keys(local.environment_map))
 }
 
 variable "primary_region" {
@@ -51,10 +108,9 @@ variable "backup_region" {
 
 locals {
   management_tenant_dns_zoneid = var.management_tenant_dns_zoneid
-  company_key                  = var.company_key
   record_ttl                   = "60"
   ns_record_type               = "NS"
-  bucket_name                  = "glueops-tenant-${local.company_key}"
+  bucket_name                  = "glueops-tenant-${var.tenant_key}"
 }
 
 variable "opsgenie_emails" {
