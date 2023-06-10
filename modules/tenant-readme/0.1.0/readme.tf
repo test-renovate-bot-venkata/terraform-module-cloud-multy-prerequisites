@@ -34,10 +34,10 @@ data "local_file" "readme" {
 }
 
 locals {
-  codespace_version         = "v0.23.0"
-  argocd_crd_version        = "v2.7.2"
-  argocd_helm_chart_version = "5.33.3"
-  glueops_platform_version  = "0.14.0"
+  codespace_version         = "v0.24.0"
+  argocd_crd_version        = "v2.7.4"
+  argocd_helm_chart_version = "5.36.1"
+  glueops_platform_version  = "0.15.0"
   tools_version             = "v0.1.4"
 }
 
@@ -56,4 +56,3 @@ output "tenant_readme" {
     "placeholder_tenant_github_org_name", "${var.tenant_github_org_name}"),
   "placeholder_tools_version", "${local.tools_version}")
 }
-
