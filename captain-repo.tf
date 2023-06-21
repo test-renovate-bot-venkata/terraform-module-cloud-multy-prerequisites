@@ -7,12 +7,21 @@ module "provider_versions" {
 
 EOT
 
+
+
 }
 
 module "captain_repository" {
   for_each        = local.environment_map
   source          = "./modules/github-captain-repository/0.1.0"
   repository_name = "${each.value.environment_name}.${aws_route53_zone.main.name}"
+
+}
+
+module "captain_repository_files" {
+  for_each        = local.environment_map
+  source          = "./modules/github-captain-repository-files/0.1.0"
+  repository_name = module.captain_repository[each.key].repository_name
   files_to_create = {
     "argocd.yaml"                                         = module.argocd_helm_values[each.value.environment_name].helm_values
     "platform.yaml"                                       = module.glueops_platform_helm_values[each.value.environment_name].helm_values
@@ -42,6 +51,16 @@ module "configure_vault_cluster" {
       ${join(",\n    ", [for mapping in each.value.vault_github_org_team_policy_mappings : "{ oidc_groups = ${jsonencode(mapping.oidc_groups)}, policy_name = \"${mapping.policy_name}\" }"])}
     ]
 }
+
+EOT
+
+    "manifests/README.md" = <<EOT
+# Tenant Customizations go here
+
+## Examples
+- ArgoCD App Projects
+- Tenant Application Repo Stacks
+- RBAC
 
 EOT
   }
