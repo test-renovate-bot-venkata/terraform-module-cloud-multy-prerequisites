@@ -9,7 +9,8 @@ resource "aws_iam_policy" "vault_s3_backup" {
     {
       "Effect": "Allow",
       "Action": [
-        "s3:PutObject"
+        "s3:PutObject",
+        "s3:GetObject"
       ],
       "Resource": [
         "${module.common_s3.primary_s3_bucket_arn}/${aws_route53_zone.clusters[each.key].name}/hashicorp-vault-backups/*",
