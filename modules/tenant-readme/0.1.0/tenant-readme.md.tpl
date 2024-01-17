@@ -11,7 +11,7 @@ This README will outline the steps required to:
 4. Tear down the cluster when it is no longer needed.
 
 <br /><br />
-## Prerequisites
+## Prerequisites (not k3d)
 
 1. User account in the desired cloud with necessary permissions to create Service Users capable of deploying a Kubernetes cluster.
 2. [Create a new Codespace.](https://github.com/codespaces/new?hide_repo_select=true&ref=%F0%9F%9A%80%F0%9F%92%8E%F0%9F%99%8C%F0%9F%9A%80&repo=527049979&skip_quickstart=true&machine=basicLinux32gb&devcontainer_path=.devcontainer%2Fplaceholder_codespace_version%2Fdevcontainer.json)
@@ -26,6 +26,7 @@ gh repo clone placeholder_github_owner/placeholder_repo_name
 ## Select Cloud
 - [GCP](#GCP)
 - [AWS](#AWS)
+- [k3d](https://github.com/GlueOps/k3d)
 
 ## GCP
 
@@ -125,10 +126,21 @@ In addition to creating the `deployment-configurations` repository, you must ins
 
 <br /><br />
 
+## Delete Tenant Data From S3
+
+Use the following command to destroy any backups/ephemeral data when you created your cluster.
+* [Launch a CloudShell](https://us-east-1.console.aws.amazon.com/cloudshell/home?region=us-west-2) within the Primary/Root AWS Account.
+    * Execute the following command in the cloudshell.  When prompted, enter the name of your captain domain (e.g. test-001-np.earth.onglueops.rocks ).
+
+```sh
+bash <(curl -s https://raw.githubusercontent.com/GlueOps/development-only-utilities/placeholder_tools_version/tools/aws/tenant-s3-nuke.sh)
+```
+
 ## Teardown Kubernetes
 
 - [AWS](#AWS-Teardown)
 - [GCP](#GCP-Teardown)
+- [k3d](#k3d-teardown)
 
 ### AWS Teardown
 
@@ -149,4 +161,12 @@ Use the following command to destroy the cluster when it is no longer needed.
 ```sh
 source <(curl -s https://raw.githubusercontent.com/GlueOps/development-only-utilities/placeholder_tools_version/tools/gcp/gcp-project-teardown) && \
     gcp-project-teardown -p placeholder_tenant_key-placeholder_cluster_environment
+```
+
+### k3d Teardown
+
+Login to the AWS Lightsail account and delete the nodes with your captain domain. You can tear down your cluster locally with:
+
+```bash
+k3d cluster delete captain
 ```
