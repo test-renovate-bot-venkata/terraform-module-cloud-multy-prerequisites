@@ -81,7 +81,7 @@ module "glueops_platform_helm_values" {
   glueops_operators_web_acl_aws_access_key   = each.value.glueops_kubernetes_operators.web_acl.aws_access_key
   glueops_operators_web_acl_aws_secret_key   = each.value.glueops_kubernetes_operators.web_acl.aws_secret
   tls_cert_backup_aws_access_key             = aws_iam_access_key.tls_cert_backup_s3[each.value.environment_name].id
-  tls_cert_backup_aws_access_secret          = aws_iam_access_key.tls_cert_backup_s3[each.value.environment_name].secret
+  tls_cert_backup_aws_secret_key             = aws_iam_access_key.tls_cert_backup_s3[each.value.environment_name].secret
   tls_cert_backup_s3_key_prefix              = local.tls_cert_backup_s3_key_prefix
 }
 
