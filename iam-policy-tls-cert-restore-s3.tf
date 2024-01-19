@@ -14,8 +14,8 @@ resource "aws_iam_policy" "tls_cert_restore_s3" {
         "s3:ListBucket*"
       ],
       "Resource": [
-        "${module.common_s3.primary_s3_bucket_arn}/${aws_route53_zone.clusters[each.key].name}/tls-cert-backups/*",
-        "${module.common_s3.replica_s3_bucket_arn}/${aws_route53_zone.clusters[each.key].name}/tls-cert-backups/*"
+        "${module.common_s3.primary_s3_bucket_arn}",
+        "${module.common_s3.replica_s3_bucket_arn}"
       ]
     }
   ]
