@@ -37,6 +37,7 @@ resource "random_password" "grafana_admin_secret" {
 locals {
   vault_access_tokens_s3_key = "hashicorp-vault-init/vault_access.json"
   tls_cert_backup_s3_key_prefix = "tls-cert-backups"
+  tls_cert_restore_exclude_namespaces = "kube-system"
 }
 
 module "glueops_platform_helm_values" {
@@ -83,6 +84,7 @@ module "glueops_platform_helm_values" {
   tls_cert_backup_aws_access_key             = aws_iam_access_key.tls_cert_backup_s3[each.value.environment_name].id
   tls_cert_backup_aws_secret_key             = aws_iam_access_key.tls_cert_backup_s3[each.value.environment_name].secret
   tls_cert_backup_s3_key_prefix              = local.tls_cert_backup_s3_key_prefix
+  tls_cert_restore_exclude_namespaces        = local.tls_cert_restore_exclude_namespaces
   tls_cert_restore_aws_access_key            = aws_iam_access_key.tls_cert_restore_s3[each.value.environment_name].id
   tls_cert_restore_aws_secret_key            = aws_iam_access_key.tls_cert_restore_s3[each.value.environment_name].secret
 }
