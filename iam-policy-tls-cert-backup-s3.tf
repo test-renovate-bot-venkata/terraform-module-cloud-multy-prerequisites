@@ -10,12 +10,10 @@ resource "aws_iam_policy" "tls_cert_backup_s3" {
       "Effect": "Allow",
       "Action": [
         "s3:PutObject",
-        "s3:GetObject*",
         "s3:List*"
       ],
       "Resource": [
-        "${module.common_s3.primary_s3_bucket_arn}/${aws_route53_zone.clusters[each.key].name}/tls-cert-backups/*",
-        "${module.common_s3.replica_s3_bucket_arn}/${aws_route53_zone.clusters[each.key].name}/tls-cert-backups/*"
+        "${module.common_s3.primary_s3_bucket_arn}/${aws_route53_zone.clusters[each.key].name}/tls-cert-backups/*"
       ]
     }
   ]
