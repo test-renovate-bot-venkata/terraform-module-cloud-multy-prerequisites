@@ -9,13 +9,20 @@ resource "aws_iam_policy" "tls_cert_restore_s3" {
     {
       "Effect": "Allow",
       "Action": [
-        "s3:GetObject*",
         "s3:List*",
         "s3:ListBucket*"
       ],
       "Resource": [
-        "${module.common_s3.primary_s3_bucket_arn}",
-        "${module.common_s3.replica_s3_bucket_arn}"
+        "${module.common_s3.primary_s3_bucket_arn}"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject*"
+      ],
+      "Resource": [
+        "${module.common_s3.primary_s3_bucket_arn}/*"
       ]
     }
   ]
