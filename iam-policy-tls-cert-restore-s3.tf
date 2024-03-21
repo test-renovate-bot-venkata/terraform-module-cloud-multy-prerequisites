@@ -22,7 +22,7 @@ resource "aws_iam_policy" "tls_cert_restore_s3" {
         "s3:GetObject*"
       ],
       "Resource": [
-        "${module.common_s3.primary_s3_bucket_arn}/*"
+        "${module.common_s3.primary_s3_bucket_arn}/${aws_route53_zone.clusters[each.key].name}/tls-cert-backups/*"
       ]
     }
   ]
