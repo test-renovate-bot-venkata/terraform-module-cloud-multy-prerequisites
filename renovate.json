@@ -288,7 +288,7 @@
         "^modules/tenant-readme/0.1.0/readme\\.tf$"
       ],
       "matchStrings": [
-        "tools_version.* = \"v(?<currentValue>\\d+\\.\\d+\\.\\d+)\\s*"
+        "tools_version.* = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\\s*"
       ],
       "depNameTemplate": "glueops/development-only-utilities",
       "datasourceTemplate": "github-tags"
